@@ -1,6 +1,7 @@
-#include "Dataset.h"
 #include <stdlib.h>
 #include <stdio.h>
+#include <assert.h>
+#include "Dataset.h"
 
 Dataset *Dataset_readFromFile(char *filename)
 {
@@ -19,6 +20,7 @@ Dataset *Dataset_readFromFile(char *filename)
     // On remplit le tableau d'instances avec les values
     for (int i = 0; i < dataset->instanceCount; i++)
     {
+        // On alloue le tableau de values de chaque instance
         dataset->instances[i].values = calloc(dataset->featureCount, sizeof(int));
         test = fscanf(file, "%d\t", &dataset->instances[i].classID);
         if (test != 1)
@@ -38,24 +40,19 @@ Dataset *Dataset_readFromFile(char *filename)
 
 void Dataset_destroy(Dataset *data)
 {
-    if (data == NULL)
-        abort();
+    assert(!data);
     // On libère d'abord toutes les valeurs du tableau d'instances
     for (int i = 0; i < data->instanceCount; i++)
         free(data->instances[i].values);
-
     // On libère ensuite le tableau d'instances
     free(data->instances);
     // puis la structure data
     free(data);
 }
 
-Subproblem *Subproblem_create(int maximumCapacity,
-                              int featureCount,
-                              int classCount)
+Subproblem *Subproblem_create(int maximumCapacity, int featureCount, int classCount)
 {
-    if (maximumCapacity <= 0 || featureCount <= 0 || classCount <= 0)
-        abort();
+    assert(maximumCapacity <= 0 || featureCount <= 0 || classCount <= 0);
     // On alloue la structure subproblem
     Subproblem *subproblem = (Subproblem *)calloc(1, sizeof(Subproblem));
     subproblem->capacity = maximumCapacity;
@@ -75,8 +72,7 @@ Subproblem *Subproblem_create(int maximumCapacity,
 
 void Subproblem_destroy(Subproblem *subproblem)
 {
-    if (subproblem == NULL)
-        return;
+    assert(!subproblem);
     // On libère les tableaux d'instances des class de subproblem
     for (int i = 0; i < subproblem->classCount; i++)
         free(subproblem->classes[i].instances);
@@ -88,11 +84,9 @@ void Subproblem_destroy(Subproblem *subproblem)
     free(subproblem);
 }
 
-void Subproblem_insert(Subproblem *subproblem,
-                       Instance *instance)
+void Subproblem_insert(Subproblem *subproblem, Instance *instance)
 {
-    if (subproblem == NULL || instance == NULL)
-        abort();
+    assert(!subproblem || !instance);
     // On vérifie qu'on ne dépasse pas la capacité d'instances du subproblem
     if (subproblem->instanceCount < subproblem->capacity)
     {
@@ -117,8 +111,7 @@ void Subproblem_insert(Subproblem *subproblem,
 
 Subproblem *Dataset_getSubproblem(Dataset *data)
 {
-    if (data == NULL)
-        abort();
+    assert(!data);
     // On crée une structure subproblem avec data
     Subproblem *subproblem = Subproblem_create(data->instanceCount, data->featureCount, data->classCount);
     // On insère toutes les instances de data dans la structure subproblem créée
@@ -130,8 +123,7 @@ Subproblem *Dataset_getSubproblem(Dataset *data)
 
 void Subproblem_print(Subproblem *subproblem)
 {
-    if (subproblem == NULL)
-        abort();
+    assert(!subproblem);
     // On renvoie le nombre de feature, le nombre de class, le nombre d'instance
     printf("Nb Features = %d, Nb classes = %d, Nb instances = %d \n", subproblem->featureCount, subproblem->classCount, subproblem->instanceCount);
     // On renvoie le nombre d'instances par class

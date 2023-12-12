@@ -2,21 +2,21 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-Dataset* Dataset_readFromFile(char* filename)
+Dataset *Dataset_readFromFile(char *filename)
 {
-    FILE* file = fopen(filename, "r");
-    if(file == NULL)
+    FILE *file = fopen(filename, "r");
+    if (file == NULL)
         abort();
-    //On alloue la structure data
-    Dataset* dataset = (Dataset*)calloc(1, sizeof(Dataset));
+    // On alloue la structure data
+    Dataset *dataset = (Dataset *)calloc(1, sizeof(Dataset));
     int test = 0;
-    //On récupère les données de la première ligne du fichier (instanceCount/classCount/featureCount)
+    // On récupère les données de la première ligne du fichier (instanceCount/classCount/featureCount)
     test = fscanf(file, "%d %d %d", &dataset->instanceCount, &dataset->classCount, &dataset->featureCount);
-    if(test != 3)
+    if (test != 3)
         abort();
-    //On alloue le tableau d'instances
-    dataset->instances = (Instance*)calloc(dataset->instanceCount, sizeof(Instance));
-    //On remplit le tableau d'instances avec les values
+    // On alloue le tableau d'instances
+    dataset->instances = (Instance *)calloc(dataset->instanceCount, sizeof(Instance));
+    // On remplit le tableau d'instances avec les values
     for (int i = 0; i < dataset->instanceCount; i++)
     {
         dataset->instances[i].values = calloc(dataset->featureCount, sizeof(int));
@@ -31,85 +31,84 @@ Dataset* Dataset_readFromFile(char* filename)
         }
     }
     fclose(file);
-    //printf("Dataset : %d instances, %d features, %d classes\n", dataset->instanceCount, dataset->featureCount, dataset->classCount);
-    //On renvoie dataset
+    // printf("Dataset : %d instances, %d features, %d classes\n", dataset->instanceCount, dataset->featureCount, dataset->classCount);
+    // On renvoie dataset
     return dataset;
 }
 
 void Dataset_destroy(Dataset *data)
 {
-    if(data == NULL)
+    if (data == NULL)
         abort();
-    //On libère d'abord toutes les valeurs du tableau d'instances
+    // On libère d'abord toutes les valeurs du tableau d'instances
     for (int i = 0; i < data->instanceCount; i++)
-    {
         free(data->instances[i].values);
-    }
-    //On libère ensuite le tableau d'instances
+
+    // On libère ensuite le tableau d'instances
     free(data->instances);
-    //puis la structure data
+    // puis la structure data
     free(data);
 }
 
-Subproblem *Subproblem_create(int maximumCapacity, 
+Subproblem *Subproblem_create(int maximumCapacity,
                               int featureCount,
                               int classCount)
 {
-    if(maximumCapacity <= 0 || featureCount <= 0 || classCount <= 0)
+    if (maximumCapacity <= 0 || featureCount <= 0 || classCount <= 0)
         abort();
-    //On alloue la structure subproblem
-    Subproblem* subproblem = (Subproblem*)calloc(1, sizeof(Subproblem));
+    // On alloue la structure subproblem
+    Subproblem *subproblem = (Subproblem *)calloc(1, sizeof(Subproblem));
     subproblem->capacity = maximumCapacity;
-    //On récupère les valeurs données dans les paramètres
+    // On récupère les valeurs données dans les paramètres
     subproblem->featureCount = featureCount;
     subproblem->classCount = classCount;
-    //On alloue le tableau d'instances de subproblem
-    subproblem->instances = (Instance**)calloc(maximumCapacity, sizeof(Instance*)); ///HOUSTON WE'VE GOT A PROBLEM !!!!
-    //On alloue la structure class de suproblem
-    subproblem->classes = (SubproblemClass*)calloc(subproblem->classCount, sizeof(SubproblemClass));
-    //On alloue les tableaux d'instances des class 
+    // On alloue le tableau d'instances de subproblem
+    subproblem->instances = (Instance **)calloc(maximumCapacity, sizeof(Instance *));
+    // On alloue la structure class de suproblem
+    subproblem->classes = (SubproblemClass *)calloc(subproblem->classCount, sizeof(SubproblemClass));
+    // On alloue les tableaux d'instances des class
     for (int i = 0; i < classCount; i++)
-        subproblem->classes[i].instances = (Instance**)calloc(maximumCapacity, sizeof(Instance*));
-    //On renvoie subproblem
+        subproblem->classes[i].instances = (Instance **)calloc(maximumCapacity, sizeof(Instance *));
+    // On renvoie subproblem
     return subproblem;
 }
 
 void Subproblem_destroy(Subproblem *subproblem)
 {
-    if(subproblem == NULL)
+    if (subproblem == NULL)
         return;
-    //On libère les tableaux d'instances des class de subproblem
+    // On libère les tableaux d'instances des class de subproblem
     for (int i = 0; i < subproblem->classCount; i++)
         free(subproblem->classes[i].instances);
-    //On libère la structure class
+    // On libère la structure class
     free(subproblem->classes);
-    //On libère le tableau instances de subproblem
+    // On libère le tableau instances de subproblem
     free(subproblem->instances);
-    //On libère la structure subproblem
+    // On libère la structure subproblem
     free(subproblem);
 }
 
-void Subproblem_insert(Subproblem *subproblem, 
+void Subproblem_insert(Subproblem *subproblem,
                        Instance *instance)
 {
-    if(subproblem == NULL || instance == NULL)
+    if (subproblem == NULL || instance == NULL)
         abort();
-    //On vérifie qu'on ne dépasse pas la capacité d'instances du subproblem
-    if(subproblem->instanceCount < subproblem->capacity)
+    // On vérifie qu'on ne dépasse pas la capacité d'instances du subproblem
+    if (subproblem->instanceCount < subproblem->capacity)
     {
-        //On ajoute l'instance en paramètre au tableau d'instances de subproblem
-        subproblem->instances[subproblem->instanceCount]= instance;
-        //On augmente le nombre d'instances dans subproblem
+        // On ajoute l'instance en paramètre au tableau d'instances de subproblem
+        subproblem->instances[subproblem->instanceCount] = instance;
+        // On augmente le nombre d'instances dans subproblem
         subproblem->instanceCount++;
-        //On cherche la classe de l'instance que l'on veut ajouter
+        // On cherche la classe de l'instance que l'on veut ajouter
         for (int i = 0; i < subproblem->classCount; i++)
         {
-            //Quand on l'a trouvée
-            if(instance->classID == i)
+            // Quand on l'a trouvée
+            if (instance->classID == i)
             {
-                //On ajoute l'instance en paramètre au tableau d'instances de class de subproblem
+                // On ajoute l'instance en paramètre au tableau d'instances de class de subproblem
                 subproblem->classes[i].instances[subproblem->classes[i].instanceCount] = instance;
-                //On augmente le nombre d'instances dans class de subproblem
+                // On augmente le nombre d'instances dans class de subproblem
                 subproblem->classes[i].instanceCount++;
             }
         }
@@ -118,24 +117,24 @@ void Subproblem_insert(Subproblem *subproblem,
 
 Subproblem *Dataset_getSubproblem(Dataset *data)
 {
-    if(data == NULL)
+    if (data == NULL)
         abort();
-    //On crée une structure subproblem avec data
-    Subproblem* subproblem = Subproblem_create(data->instanceCount, data->featureCount, data->classCount);
-    //On insère toutes les instances de data dans la structure subproblem créée
+    // On crée une structure subproblem avec data
+    Subproblem *subproblem = Subproblem_create(data->instanceCount, data->featureCount, data->classCount);
+    // On insère toutes les instances de data dans la structure subproblem créée
     for (int i = 0; i < data->instanceCount; i++)
         Subproblem_insert(subproblem, &data->instances[i]);
-    //On renvoie subproblem
+    // On renvoie subproblem
     return subproblem;
 }
 
 void Subproblem_print(Subproblem *subproblem)
 {
-    if(subproblem == NULL)
-        abort(); 
-    //On renvoie le nombre de feature, le nombre de class, le nombre d'instance
+    if (subproblem == NULL)
+        abort();
+    // On renvoie le nombre de feature, le nombre de class, le nombre d'instance
     printf("Nb Features = %d, Nb classes = %d, Nb instances = %d \n", subproblem->featureCount, subproblem->classCount, subproblem->instanceCount);
-    //On renvoie le nombre d'instances par class
+    // On renvoie le nombre d'instances par class
     for (int i = 0; i < subproblem->classCount; i++)
         printf("Class %d : %d instances\n", i, subproblem->classes[i].instanceCount);
 }

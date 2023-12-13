@@ -89,8 +89,8 @@ int DecisionTreeNode_parcours(DecisionTreeNode *node, int nb_node)
 int Decision_nodeCount(DecisionTreeNode *node)
 {
     if (node == NULL)
-        abort();
-    int nb_node = 0;
-    nb_node = DecisionTreeNode_parcours(node, nb_node);
+        return -1;
+    int nb_node = -1;
+    nb_node = DecisionTreeNode_parcours(node);
     return nb_node;
 }

@@ -31,7 +31,7 @@ void DecisionTree_destroy(DecisionTreeNode *decisionTree);
 /// @brief Fait la fonction suivante mais en récursif
 /// @param tree L'arbre a tester
 /// @return Le nombre de node
-int DecisionTreeNode_parcours(DecisionTreeNode* tree);
+int DecisionTreeNode_parcours(DecisionTreeNode* node, int nb_node);
 
 /// @brief renvoie le nombre de noeuds présents dans l’arbre, qui servira à vérifier le bon fonctionnement de votre procédure de construction, et également d’obtenir la taille de votre modèle.
 /// @param node L'arbre a tester

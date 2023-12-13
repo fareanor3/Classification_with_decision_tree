@@ -73,36 +73,21 @@ void DecisionTree_destroy(DecisionTreeNode *decisionTree)
     return;
 }
 
-int DecisionTreeNode_parcours(DecisionTreeNode* tree)
+int DecisionTreeNode_parcours(DecisionTreeNode* node, int nb_node)
 {
-    if(tree == NULL)
-        abort();
-    int nb_nodes = 0;
-    DecisionTreeNode** parcours = (DecisionTreeNode**)calloc(tree, sizeof(DecisionTreeNode*));
-    int debutlist = 0;
-    int finlist = 0;
-    parcours[finlist++] = tree;
-    while(debutlist != finlist)
-    {
-        // Noeud n ← Défiler(F)
-        DecisionTreeNode* node = parcours[debutlist++];
-        nb_nodes++;
-        // Enfiler(FilsGauche(n), F)
-        if(node->left != NULL)
-            parcours[finlist++] = node->left;
-        // Enfiler(FilsDroit(n), F)
-        if(node->right != NULL)
-            parcours[finlist++] = node->right;
-    }
-    free(parcours);
-    return nb_nodes;
+    if (!node)
+        return nb_node;
+    nb_node++;
+    nb_node += preOrderPrintRec(node->left, 0);
+    nb_node += preOrderPrintRec(node->right, 0);
 }
+
 
 int Decision_nodeCount(DecisionTreeNode* node)
 {
     if(node == NULL)
-        return -1;
-    int nb_node = -1;
-    nb_node = DecisionTreeNode_parcours(node);
+        abort();
+    int nb_node = 0;
+    nb_node = DecisionTreeNode_parcours(node, nb_node);
     return nb_node;
 }

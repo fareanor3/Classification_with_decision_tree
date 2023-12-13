@@ -5,28 +5,67 @@ RandomForest *RandomForest_create(int numberOfTrees, Dataset *data, int maxDepth
     if (numberOfTrees <= 0 || !data || maxDepth <= 0 || baggingProportion <= 0 || prunningThreshold <= 0)
         abort();
     RandomForest *randomForest = (RandomForest *)calloc(1, sizeof(RandomForest));
-    RandomForest->treeCount = numberOfTrees;
-    RandomForest->classCount = data->classCount;
-    RandomForest->trees = (DecisionTreeNode **)calloc(numberOfTrees, sizeof(DecisionTreeNode *));
+    randomForest->treeCount = numberOfTrees;
+    randomForest->classCount = data->classCount;
+    randomForest->trees = (DecisionTreeNode **)calloc(numberOfTrees, sizeof(DecisionTreeNode *));
+    for (int i = 0; i < numberOfTrees; i++)
+    {
+        Subproblem *sp = Subproblem_create(data, baggingProportion);
+        randomForest->trees[i] = DecisionTree_create(sp, 0, maxDepth, prunningThreshold);
+        Subproblem_destroy(sp);
+    }
     return randomForest;
 }
 
 int RandomForest_predict(RandomForest *rf, Instance *instance)
 {
-    return 0;
+    int *votes = (int *)calloc(rf->classCount, sizeof(int));
+    for (int i = 0; i < rf->treeCount; i++)
+    {
+        int prediction = DecisionTree_predict(rf->trees[i], instance);
+        votes[prediction]++;
+    }
+    int majorityVote = 0;
+    for (int i = 1; i < rf->classCount; i++)
+    {
+        if (votes[i] > votes[majorityVote])
+        {
+            majorityVote = i;
+        }
+    }
+    free(votes);
+    return majorityVote;
 }
 
 float RandomForest_evaluate(RandomForest *rf, Dataset *data)
 {
-    return 0.0f;
+    int correctPredictions = 0;
+    for (int i = 0; i < data->instanceCount; i++)
+    {
+        if (RandomForest_predict(rf, &data->instances[i]) == data->instances[i].classID)
+        {
+            correctPredictions++;
+        }
+    }
+    return (float)correctPredictions / (float)data->instanceCount;
 }
 
 int RandomForest_nodeCount(RandomForest *rf)
 {
-    return 0;
+    int totalNodes = 0;
+    for (int i = 0; i < rf->treeCount; i++)
+    {
+        totalNodes += DecisionTreeNode_parcours(rf->trees[i], 0);
+    }
+    return totalNodes;
 }
 
 void RandomForest_destroy(RandomForest *rf)
 {
-    return;
+    for (int i = 0; i < rf->treeCount; i++)
+    {
+        DecisionTree_destroy(rf->trees[i]);
+    }
+    free(rf->trees);
+    free(rf);
 }

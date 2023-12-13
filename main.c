@@ -12,7 +12,7 @@ int main(int argc, char **argv)
     printf("fin get subproblems");
     DecisionTreeNode *tree = DecisionTree_create(sp, 0, 30, 1.0);
     printf("fin decision tree create");
-    printf("Génération d'un arbre de %d nœuds\n", Decision_nodeCount(tree));
+    printf("Generation d'un arbre de %d noeuds\n", Decision_nodeCount(tree));
     DecisionTree_destroy(tree);
     Dataset_destroy(trainData);
     return 0;

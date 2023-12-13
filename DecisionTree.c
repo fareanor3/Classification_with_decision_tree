@@ -4,7 +4,8 @@
 
 DecisionTreeNode *DecisionTree_create(Subproblem *sp, int currentDepth, int maxDepth, float prunningThreshold)
 {
-    assert(!sp || currentDepth < 0 || maxDepth < 0 || prunningThreshold < 0);
+    if (!sp || currentDepth < 0 || maxDepth < 0 || prunningThreshold < 0)
+        abort();
     DecisionTreeNode *n = (DecisionTreeNode *)calloc(1, sizeof(DecisionTreeNode));
     float sp_purity = Subproblem_purity(sp);
     if (sp_purity >= prunningThreshold)
@@ -28,7 +29,8 @@ DecisionTreeNode *DecisionTree_create(Subproblem *sp, int currentDepth, int maxD
 
 float Subproblem_purity(Subproblem *subproblem)
 {
-    assert(!subproblem);
+    if (!subproblem)
+        abort();
     float purity = 0;
     int instance_max = 0;
     for (int i = 0; i < subproblem->classCount; i++)
@@ -42,7 +44,8 @@ float Subproblem_purity(Subproblem *subproblem)
 
 int Subproblem_majorityclass(Subproblem *subproblem)
 {
-    assert(!subproblem);
+    if (!subproblem)
+        abort();
     int instance_max = 0;
     int class_majority = -1;
     for (int i = 0; i < subproblem->classCount; i++)
@@ -67,42 +70,27 @@ void DecisionTree_destroyRec(DecisionTreeNode *node)
 
 void DecisionTree_destroy(DecisionTreeNode *decisionTree)
 {
-    if(decisionTree == NULL)
+    if (decisionTree == NULL)
         return;
     DecisionTree_destroyRec(decisionTree);
     return;
 }
 
-int DecisionTreeNode_parcours(DecisionTreeNode* tree)
+int DecisionTreeNode_parcours(DecisionTreeNode *node, int nb_node)
 {
-    if(tree == NULL)
-        abort();
-    int nb_nodes = 0;
-    DecisionTreeNode** parcours = (DecisionTreeNode**)calloc(tree, sizeof(DecisionTreeNode*));
-    int debutlist = 0;
-    int finlist = 0;
-    parcours[finlist++] = tree;
-    while(debutlist != finlist)
-    {
-        // Noeud n ← Défiler(F)
-        DecisionTreeNode* node = parcours[debutlist++];
-        nb_nodes++;
-        // Enfiler(FilsGauche(n), F)
-        if(node->left != NULL)
-            parcours[finlist++] = node->left;
-        // Enfiler(FilsDroit(n), F)
-        if(node->right != NULL)
-            parcours[finlist++] = node->right;
-    }
-    free(parcours);
-    return nb_nodes;
+    if (!node)
+        return nb_node;
+    nb_node++;
+    nb_node += DecisionTreeNode_parcours(node->left, 0);
+    nb_node += DecisionTreeNode_parcours(node->right, 0);
+    return nb_node;
 }
 
-int Decision_nodeCount(DecisionTreeNode* node)
+int Decision_nodeCount(DecisionTreeNode *node)
 {
-    if(node == NULL)
-        return -1;
-    int nb_node = -1;
-    nb_node = DecisionTreeNode_parcours(node);
+    if (node == NULL)
+        abort();
+    int nb_node = 0;
+    nb_node = DecisionTreeNode_parcours(node, nb_node);
     return nb_node;
 }

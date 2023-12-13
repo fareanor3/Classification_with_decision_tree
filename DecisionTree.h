@@ -37,3 +37,15 @@ int DecisionTreeNode_parcours(DecisionTreeNode *node, int nb_node);
 /// @param node L'arbre a tester
 /// @return Le nombre de node
 int Decision_nodeCount(DecisionTreeNode *node);
+
+/// @brief détermine la réponse de l’arbre à l’instance. On part de la racine et on descend dans l’arbre jusqu’à atteindre une feuille. La classe représentée par cette feuille correspondra à la prédiction de l’arbre.
+/// @param tree L'arbre utilisé
+/// @param instance L'insatance testée
+/// @return La prédiction de l'arbre
+int DecisionTree_predict(DecisionTreeNode *tree, Instance *instance);
+
+/// @brief permet de calculer la précision de l’arbre sur le dataset passé en paramètre. On le calculera facilement comme le nombre d’instances bien classées sur le nombre total d’instances.
+/// @param tree L'arbre testé
+/// @param dataset Le dataset testé
+/// @return La précision de l'arbre entre 0 et 1
+float DecisionTree_evaluate(DecisionTreeNode *tree, Dataset *dataset);

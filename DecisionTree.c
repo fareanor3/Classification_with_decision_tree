@@ -8,13 +8,7 @@ DecisionTreeNode *DecisionTree_create(Subproblem *sp, int currentDepth, int maxD
         abort();
     DecisionTreeNode *n = (DecisionTreeNode *)calloc(1, sizeof(DecisionTreeNode));
     float sp_purity = Subproblem_purity(sp);
-    if (sp_purity >= prunningThreshold)
-    {
-        int sp_majority = Subproblem_majorityclass(sp);
-        n->classID = sp_majority;
-        return n;
-    }
-    if (currentDepth >= maxDepth)
+    if (sp_purity >= prunningThreshold || currentDepth >= maxDepth)
     {
         int sp_majority = Subproblem_majorityclass(sp);
         n->classID = sp_majority;
@@ -24,6 +18,23 @@ DecisionTreeNode *DecisionTree_create(Subproblem *sp, int currentDepth, int maxD
     n->split = s;
     Subproblem *sp_left = Subproblem_create(sp->capacity / 2, sp->featureCount, sp->classCount);
     Subproblem *sp_right = Subproblem_create(sp->capacity / 2, sp->featureCount, sp->classCount);
+    for (int i = 0; i < sp->instanceCount; i++)
+    {
+        if (sp->instances[i]->values[s.featureID] < s.threshold)
+        {
+            sp_left->instances[sp_left->instanceCount] = sp->instances[i];
+            sp_left->instanceCount++;
+        }
+        else
+        {
+            sp_right->instances[sp_right->instanceCount] = sp->instances[i];
+            sp_right->instanceCount++;
+        }
+    }
+    n->left = DecisionTree_create(sp_left, currentDepth + 1, maxDepth, prunningThreshold);
+    n->right = DecisionTree_create(sp_right, currentDepth + 1, maxDepth, prunningThreshold);
+    Subproblem_destroy(sp_left);
+    Subproblem_destroy(sp_right);
     return n;
 }
 
@@ -93,4 +104,26 @@ int Decision_nodeCount(DecisionTreeNode *node)
     int nb_node = 0;
     nb_node = DecisionTreeNode_parcours(node, nb_node);
     return nb_node;
+}
+
+int DecisionTree_predictRec(DecisionTreeNode *node, Instance *instance)
+{
+    if (node->left == NULL && node->right == NULL)
+        return node->classID;
+    int test = instance->values[node->split.featureID];
+    // TO FINISH
+    if (test < node->split.threshold)
+        DecisionTree_predictRec(node->left, instance);
+    else if (test >= node->split.threshold)
+        DecisionTree_predictRec(node->right, instance);
+    return node->classID;
+}
+
+int DecisionTree_predict(DecisionTreeNode *tree, Instance *instance)
+{
+    if (tree == NULL || instance == NULL)
+        abort();
+    int prediction = -1;
+    prediction = DecisionTree_predictRec(tree, instance);
+    return prediction;
 }

@@ -10,7 +10,7 @@ RandomForest *RandomForest_create(int numberOfTrees, Dataset *data, int maxDepth
     randomForest->trees = (DecisionTreeNode **)calloc(numberOfTrees, sizeof(DecisionTreeNode *));
     for (int i = 0; i < numberOfTrees; i++)
     {
-        Subproblem *sp = Subproblem_create(data, baggingProportion);
+        Subproblem *sp = Subproblem_create(data->instanceCount * baggingProportion, data->featureCount, data->classCount);
         randomForest->trees[i] = DecisionTree_create(sp, 0, maxDepth, prunningThreshold);
         Subproblem_destroy(sp);
     }

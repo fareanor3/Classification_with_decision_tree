@@ -3,7 +3,7 @@
 
 int main(int argc, char **argv)
 {
-    char path[128] = "../Datasets/PENDIGITS_train.txt";
+    char path[128] = "./Datasets/PENDIGITS_train.txt";
     // char path[128] = "./Datasets/MNIST_test.txt";
     // char path[128] = "./Datasets/DATASET_A_MOI.txt";
 

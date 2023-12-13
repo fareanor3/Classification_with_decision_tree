@@ -21,8 +21,8 @@ DecisionTreeNode *DecisionTree_create(Subproblem *sp, int currentDepth, int maxD
     }
     Split s = Split_compute(sp);
     n->split = s;
-    Subproblem *sp_left = Subproblem_create(sp->classCount);
-    Subproblem *sp_right = Subproblem_create(sp->classCount);
+    Subproblem *sp_left = Subproblem_create(sp->capacity/2, sp->featureCount, sp->classCount);
+    Subproblem *sp_right = Subproblem_create(sp->capacity/2, sp->featureCount, sp->classCount);
 }
 
 float Subproblem_purity(Subproblem *subproblem)

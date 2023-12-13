@@ -1,6 +1,3 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <math.h>
 #include "Dataset.h"
 
 typedef struct sSplit

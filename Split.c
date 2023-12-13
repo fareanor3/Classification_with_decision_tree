@@ -1,4 +1,7 @@
 #include "Split.h"
+#include <stdlib.h>
+#include <stdio.h>
+#include <math.h>
 
 float Split_gini(Subproblem *sp, int featureID, float threshold)
 {

@@ -55,3 +55,54 @@ int Subproblem_majorityclass(Subproblem *subproblem)
     }
     return class_majority;
 }
+
+void DecisionTree_destroyRec(DecisionTreeNode *node)
+{
+    if (!node)
+        return;
+    DecisionTree_destroyRec(node->left);
+    DecisionTree_destroyRec(node->right);
+    free(node);
+}
+
+void DecisionTree_destroy(DecisionTreeNode *decisionTree)
+{
+    if(decisionTree == NULL)
+        return;
+    DecisionTree_destroyRec(decisionTree);
+    return;
+}
+
+int DecisionTreeNode_parcours(DecisionTreeNode* tree)
+{
+    if(tree == NULL)
+        abort();
+    int nb_nodes = 0;
+    DecisionTreeNode** parcours = (DecisionTreeNode**)calloc(tree, sizeof(DecisionTreeNode*));
+    int debutlist = 0;
+    int finlist = 0;
+    parcours[finlist++] = tree;
+    while(debutlist != finlist)
+    {
+        // Noeud n ← Défiler(F)
+        DecisionTreeNode* node = parcours[debutlist++];
+        nb_nodes++;
+        // Enfiler(FilsGauche(n), F)
+        if(node->left != NULL)
+            parcours[finlist++] = node->left;
+        // Enfiler(FilsDroit(n), F)
+        if(node->right != NULL)
+            parcours[finlist++] = node->right;
+    }
+    free(parcours);
+    return nb_nodes;
+}
+
+int Decision_nodeCount(DecisionTreeNode* node)
+{
+    if(node == NULL)
+        return -1;
+    int nb_node = -1;
+    nb_node = DecisionTreeNode_parcours(node);
+    return nb_node;
+}

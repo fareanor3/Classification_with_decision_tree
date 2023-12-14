@@ -60,3 +60,9 @@ void Subproblem_insert(Subproblem *subproblem, Instance *instance);
 /// @brief affiche le nombre de features, de classes et d’instances référencées, ainsi que le nombre d’instances pour chacune des classes.
 /// @param subproblem la structure dont on affiche les données
 void Subproblem_print(Subproblem *subproblem);
+
+/// @brief Produit un sous-problème en considérant seulement une partie des instances
+/// @param data Le dataset de base
+/// @param proportion La proportion du dataset que l'on veut
+/// @return Un sous-problème avec une proportion des instances du dataset de base
+Subproblem *Dataset_bagging(Dataset *data, float proportion);

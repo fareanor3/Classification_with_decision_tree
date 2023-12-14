@@ -40,7 +40,8 @@ Dataset *Dataset_readFromFile(char *filename)
 
 void Dataset_destroy(Dataset *data)
 {
-    if (!data) abort();
+    if (!data)
+        abort();
     // On libère d'abord toutes les valeurs du tableau d'instances
     for (int i = 0; i < data->instanceCount; i++)
         free(data->instances[i].values);
@@ -52,7 +53,8 @@ void Dataset_destroy(Dataset *data)
 
 Subproblem *Subproblem_create(int maximumCapacity, int featureCount, int classCount)
 {
-    if (maximumCapacity <= 0 || featureCount <= 0 || classCount <= 0) abort();
+    if (maximumCapacity <= 0 || featureCount <= 0 || classCount <= 0)
+        abort();
     // On alloue la structure subproblem
     Subproblem *subproblem = (Subproblem *)calloc(1, sizeof(Subproblem));
     subproblem->capacity = maximumCapacity;
@@ -72,7 +74,8 @@ Subproblem *Subproblem_create(int maximumCapacity, int featureCount, int classCo
 
 void Subproblem_destroy(Subproblem *subproblem)
 {
-    if (!subproblem) abort();
+    if (!subproblem)
+        abort();
     // On libère les tableaux d'instances des class de subproblem
     for (int i = 0; i < subproblem->classCount; i++)
         free(subproblem->classes[i].instances);
@@ -86,7 +89,8 @@ void Subproblem_destroy(Subproblem *subproblem)
 
 void Subproblem_insert(Subproblem *subproblem, Instance *instance)
 {
-    if (!subproblem || !instance) abort();
+    if (!subproblem || !instance)
+        abort();
     // On vérifie qu'on ne dépasse pas la capacité d'instances du subproblem
     if (subproblem->instanceCount < subproblem->capacity)
     {
@@ -111,7 +115,8 @@ void Subproblem_insert(Subproblem *subproblem, Instance *instance)
 
 Subproblem *Dataset_getSubproblem(Dataset *data)
 {
-    if (data == NULL) abort();
+    if (data == NULL)
+        abort();
     // On crée une structure subproblem avec data
     Subproblem *subproblem = Subproblem_create(data->instanceCount, data->featureCount, data->classCount);
     // On insère toutes les instances de data dans la structure subproblem créée
@@ -123,10 +128,42 @@ Subproblem *Dataset_getSubproblem(Dataset *data)
 
 void Subproblem_print(Subproblem *subproblem)
 {
-    if (!subproblem) abort();
+    if (!subproblem)
+        abort();
     // On renvoie le nombre de feature, le nombre de class, le nombre d'instance
     printf("Nb Features = %d, Nb classes = %d, Nb instances = %d \n", subproblem->featureCount, subproblem->classCount, subproblem->instanceCount);
     // On renvoie le nombre d'instances par class
     for (int i = 0; i < subproblem->classCount; i++)
         printf("Class %d : %d instances\n", i, subproblem->classes[i].instanceCount);
+}
+
+Subproblem *Dataset_bagging(Dataset *data, float proportion)
+{
+    if (data == NULL || proportion <= 0)
+        abort();
+    // On cherche combien d'instances sont la proportion qu'on nous a donné
+    int quantite_inst = data->instanceCount * proportion;
+    // On alloue le nouveau dataset
+    Dataset *rand_data = (Dataset *)calloc(1, sizeof(Dataset));
+    // On lui attribue ses composantes
+    rand_data->instanceCount = quantite_inst;
+    rand_data->featureCount = data->featureCount;
+    rand_data->classCount = data->classCount;
+    // On alloue son tableau d'instances
+    rand_data->instances = (Instance *)calloc(rand_data->instanceCount, sizeof(Instance));
+    // On choisit aléatoirement les instances qui composeront le nouveau dataset
+    for (int i = 0; i < rand_data->instanceCount; i++)
+    {
+        // On cherche un nombre aléatoire compris entre 0 et le nombre d'instances de data
+        int inf = 0, sup = data->instanceCount;
+        int nb_rand = (rand() % (sup + 1 - inf)) + inf;
+        // On met l'instance de rand_data à la place i avec la valeur celle de data à la place nb_rand
+        rand_data->instances[i].values = data->instances[nb_rand].values;
+    }
+    // On crée un subproblem avec ce nouveau dataset
+    Subproblem *subproblem = Dataset_getSubproblem(rand_data);
+    // On désalloue le dataset
+    Dataset_destroy(rand_data);
+    // On retourne le subproblem crée
+    return subproblem;
 }

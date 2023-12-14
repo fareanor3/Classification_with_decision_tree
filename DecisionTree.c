@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <assert.h>
+#include <stdio.h>
 #include "DecisionTree.h"
 
 DecisionTreeNode *DecisionTree_create(Subproblem *sp, int currentDepth, int maxDepth, float prunningThreshold)
@@ -7,30 +8,24 @@ DecisionTreeNode *DecisionTree_create(Subproblem *sp, int currentDepth, int maxD
     if (!sp || currentDepth < 0 || maxDepth < 0 || prunningThreshold < 0)
         abort();
     DecisionTreeNode *n = (DecisionTreeNode *)calloc(1, sizeof(DecisionTreeNode));
-    float sp_purity = Subproblem_purity(sp);
-    if (sp_purity >= prunningThreshold || currentDepth >= maxDepth)
+    float purity = Subproblem_purity(sp);
+    if (currentDepth >= maxDepth || purity >= prunningThreshold)
     {
-        int sp_majority = Subproblem_majorityclass(sp);
-        n->classID = sp_majority;
+        n->classID = Subproblem_majorityclass(sp);
         return n;
     }
     Split s = Split_compute(sp);
     n->split = s;
-    Subproblem *sp_left = Subproblem_create(sp->capacity / 2, sp->featureCount, sp->classCount);
-    Subproblem *sp_right = Subproblem_create(sp->capacity / 2, sp->featureCount, sp->classCount);
+    Subproblem *sp_left = Subproblem_create(sp->capacity, sp->featureCount, sp->classCount);
+    Subproblem *sp_right = Subproblem_create(sp->capacity, sp->featureCount, sp->classCount);
     for (int i = 0; i < sp->instanceCount; i++)
     {
-        if (sp->instances[i]->values[s.featureID] < s.threshold)
-        {
-            sp_left->instances[sp_left->instanceCount] = sp->instances[i];
-            sp_left->instanceCount++;
-        }
+        if (sp->instances[i]->values[n->split.featureID] < n->split.threshold)
+            Subproblem_insert(sp_left, sp->instances[i]);
         else
-        {
-            sp_right->instances[sp_right->instanceCount] = sp->instances[i];
-            sp_right->instanceCount++;
-        }
+            Subproblem_insert(sp_right, sp->instances[i]);
     }
+
     n->left = DecisionTree_create(sp_left, currentDepth + 1, maxDepth, prunningThreshold);
     n->right = DecisionTree_create(sp_right, currentDepth + 1, maxDepth, prunningThreshold);
     Subproblem_destroy(sp_left);
@@ -42,14 +37,15 @@ float Subproblem_purity(Subproblem *subproblem)
 {
     if (!subproblem)
         abort();
-    float purity = 0;
+    float purity = 1.0f;
     int instance_max = 0;
     for (int i = 0; i < subproblem->classCount; i++)
     {
-        if (subproblem->classes[i].instanceCount >= instance_max)
+        if (subproblem->classes[i].instanceCount > instance_max)
             instance_max = subproblem->classes[i].instanceCount;
     }
-    purity = (float)instance_max / (float)subproblem->instanceCount;
+    if (subproblem->instanceCount > 0)
+        purity = (float)instance_max / (float)subproblem->instanceCount;
     return purity;
 }
 

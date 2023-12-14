@@ -1,1 +1,3 @@
 /cmake-build-debug
+/obj
+.vs/Classification_with_decision_tree

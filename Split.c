@@ -16,18 +16,22 @@ float Split_gini(Subproblem *sp, int featureID, float threshold)
        du nombre d'individus dans chaque sous-problème)
     5. Retourner la valeur final en float
     */
+    // if (!sp || featureID <= 0 || threshold <= 0)
+
     int i;
     float gini = 0.0, sum_sup = 0.0, sum_inf = 0.0, p;
     int total_instances = sp->instanceCount;
     int total_sup = 0, total_inf = 0;
     int *class_counts_sup = calloc(sp->classCount, sizeof(int));
     int *class_counts_inf = calloc(sp->classCount, sizeof(int));
+
     for (i = 0; i < sp->classCount; i++)
         class_counts_sup[i] = class_counts_inf[i] = 0;
     for (i = 0; i < sp->instanceCount; i++) // Parcourir toutes les instances du sous-problème
     {
         if (sp->instances[i]->values[featureID] < threshold)
         {
+
             class_counts_inf[sp->instances[i]->classID]++;
             total_inf++;
         }
@@ -94,7 +98,7 @@ Split Split_compute(Subproblem *subproblem)
             split.threshold = PhiJ;
         }
     }
-    printf("Split feature : %d threshold : %f min_gini : %f\n", split.featureID, split.threshold, min_gini);
+    // printf("Split feature : %d threshold : %f gini (impurity) : %f\n", split.featureID, split.threshold, min_gini);
     return split;
 }
 

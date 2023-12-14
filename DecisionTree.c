@@ -16,8 +16,16 @@ DecisionTreeNode *DecisionTree_create(Subproblem *sp, int currentDepth, int maxD
     }
     Split s = Split_compute(sp);
     n->split = s;
-    Subproblem *sp_left = Subproblem_create(sp->capacity, sp->featureCount, sp->classCount);  // TODO :  Ajuster la taille du subproblem
-    Subproblem *sp_right = Subproblem_create(sp->capacity, sp->featureCount, sp->classCount); // TODO :  Ajuster la taille du subproblem
+    int leftCount = 0, rightCount = 0;
+    for (int i = 0; i < sp->instanceCount; i++)
+    {
+        if (sp->instances[i]->values[n->split.featureID] < n->split.threshold)
+            leftCount++;
+        else
+            rightCount++;
+    }
+    Subproblem *sp_left = Subproblem_create(leftCount, sp->featureCount, sp->classCount);
+    Subproblem *sp_right = Subproblem_create(rightCount, sp->featureCount, sp->classCount);
     for (int i = 0; i < sp->instanceCount; i++)
     {
         if (sp->instances[i]->values[n->split.featureID] < n->split.threshold)

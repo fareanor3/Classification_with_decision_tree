@@ -10,7 +10,7 @@ RandomForest *RandomForest_create(int numberOfTrees, Dataset *data, int maxDepth
     randomForest->trees = (DecisionTreeNode **)calloc(numberOfTrees, sizeof(DecisionTreeNode *));
     for (int i = 0; i < numberOfTrees; i++)
     {
-        Subproblem *sp = Subproblem_create(data->instanceCount * baggingProportion, data->featureCount, data->classCount);
+        Subproblem *sp = Dataset_bagging(data, baggingProportion);
         randomForest->trees[i] = DecisionTree_create(sp, 0, maxDepth, prunningThreshold);
         Subproblem_destroy(sp);
     }
@@ -19,6 +19,8 @@ RandomForest *RandomForest_create(int numberOfTrees, Dataset *data, int maxDepth
 
 int RandomForest_predict(RandomForest *rf, Instance *instance)
 {
+    if (!rf || !instance)
+        abort();
     int *votes = (int *)calloc(rf->classCount, sizeof(int));
     for (int i = 0; i < rf->treeCount; i++)
     {
@@ -26,10 +28,12 @@ int RandomForest_predict(RandomForest *rf, Instance *instance)
         votes[prediction]++;
     }
     int majorityVote = 0;
+    int maxVotes = votes[0];
     for (int i = 1; i < rf->classCount; i++)
     {
-        if (votes[i] > votes[majorityVote])
+        if (votes[i] > maxVotes)
         {
+            maxVotes = votes[i];
             majorityVote = i;
         }
     }
@@ -43,9 +47,7 @@ float RandomForest_evaluate(RandomForest *rf, Dataset *data)
     for (int i = 0; i < data->instanceCount; i++)
     {
         if (RandomForest_predict(rf, &data->instances[i]) == data->instances[i].classID)
-        {
             correctPredictions++;
-        }
     }
     return (float)correctPredictions / (float)data->instanceCount;
 }
@@ -55,7 +57,7 @@ int RandomForest_nodeCount(RandomForest *rf)
     int totalNodes = 0;
     for (int i = 0; i < rf->treeCount; i++)
     {
-        totalNodes += DecisionTreeNode_parcours(rf->trees[i], 0);
+        totalNodes += Decision_nodeCount(rf->trees[i]);
     }
     return totalNodes;
 }

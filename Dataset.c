@@ -155,15 +155,18 @@ Subproblem *Dataset_bagging(Dataset *data, float proportion)
     for (int i = 0; i < rand_data->instanceCount; i++)
     {
         // On cherche un nombre aléatoire compris entre 0 et le nombre d'instances de data
-        int inf = 0, sup = data->instanceCount;
+        int inf = 0, sup = data->instanceCount - 1;
         int nb_rand = (rand() % (sup + 1 - inf)) + inf;
         // On met l'instance de rand_data à la place i avec la valeur celle de data à la place nb_rand
-        rand_data->instances[i].values = data->instances[nb_rand].values;
+        rand_data->instances[i].values = (int *)calloc(data->featureCount, sizeof(int));
+        // On remplit le tableau de values de l'instance de rand_data à la place i avec les valeurs de data à la place nb_rand
+        for (int j = 0; j < data->featureCount; j++)
+            rand_data->instances[i].values[j] = (int)data->instances[nb_rand].values[j];
+        // On met la classID de rand_data à la place i avec la valeur celle de data à la place nb_rand
+        rand_data->instances[i].classID = data->instances[nb_rand].classID;
     }
     // On crée un subproblem avec ce nouveau dataset
     Subproblem *subproblem = Dataset_getSubproblem(rand_data);
-    // On désalloue le dataset
-    Dataset_destroy(rand_data);
     // On retourne le subproblem crée
     return subproblem;
 }

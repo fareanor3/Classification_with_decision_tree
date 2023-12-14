@@ -107,12 +107,10 @@ int DecisionTree_predictRec(DecisionTreeNode *node, Instance *instance)
     if (node->left == NULL && node->right == NULL)
         return node->classID;
     int test = instance->values[node->split.featureID];
-    // TO FINISH
     if (test < node->split.threshold)
-        DecisionTree_predictRec(node->left, instance);
-    else if (test >= node->split.threshold)
-        DecisionTree_predictRec(node->right, instance);
-    return node->classID;
+        return DecisionTree_predictRec(node->left, instance);
+    else
+        return DecisionTree_predictRec(node->right, instance);
 }
 
 int DecisionTree_predict(DecisionTreeNode *tree, Instance *instance)
@@ -122,4 +120,21 @@ int DecisionTree_predict(DecisionTreeNode *tree, Instance *instance)
     int prediction = -1;
     prediction = DecisionTree_predictRec(tree, instance);
     return prediction;
+}
+
+float DecisionTree_evaluate(DecisionTreeNode *tree, Dataset *dataset)
+{
+    if (tree == NULL || dataset == NULL)
+        abort();
+    float good_class = 0;
+    float prediction = 0;
+    float precision = 0;
+    for (int i = 0; i < dataset->instanceCount; i++)
+    {
+        prediction = DecisionTree_predict(tree, &dataset->instances[i]);
+        if (prediction == dataset->instances[i].classID)
+            good_class++;
+    }
+    precision = (float)good_class / (float)dataset->instanceCount;
+    return precision;
 }

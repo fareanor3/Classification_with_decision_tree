@@ -23,7 +23,7 @@ int main(int argc, char **argv)
     char pathTest[128] = "./Datasets/PENDIGITS_test.txt";
     Dataset *testData = Dataset_readFromFile(pathTest);
     Subproblem *sp = Dataset_getSubproblem(trainData);
-    DecisionTreeNode *tree = DecisionTree_create(sp, 0, 30, 1.0);
+    DecisionTreeNode *tree = DecisionTree_create(sp, 0, 30, 1.0f);
     float scoreTrain = DecisionTree_evaluate(tree, trainData);
     float scoreTest = DecisionTree_evaluate(tree, testData);
     printf("train = %.3f, test = %.3f\n", scoreTrain, scoreTest);

@@ -16,8 +16,8 @@ DecisionTreeNode *DecisionTree_create(Subproblem *sp, int currentDepth, int maxD
     }
     Split s = Split_compute(sp);
     n->split = s;
-    Subproblem *sp_left = Subproblem_create(sp->capacity, sp->featureCount, sp->classCount);
-    Subproblem *sp_right = Subproblem_create(sp->capacity, sp->featureCount, sp->classCount);
+    Subproblem *sp_left = Subproblem_create(sp->capacity, sp->featureCount, sp->classCount);  // TODO :  Ajuster la taille du subproblem
+    Subproblem *sp_right = Subproblem_create(sp->capacity, sp->featureCount, sp->classCount); // TODO :  Ajuster la taille du subproblem
     for (int i = 0; i < sp->instanceCount; i++)
     {
         if (sp->instances[i]->values[n->split.featureID] < n->split.threshold)
@@ -44,8 +44,7 @@ float Subproblem_purity(Subproblem *subproblem)
         if (subproblem->classes[i].instanceCount > instance_max)
             instance_max = subproblem->classes[i].instanceCount;
     }
-    if (subproblem->instanceCount > 0)
-        purity = (float)instance_max / (float)subproblem->instanceCount;
+    purity = (float)instance_max / (float)subproblem->instanceCount;
     return purity;
 }
 
@@ -54,7 +53,7 @@ int Subproblem_majorityclass(Subproblem *subproblem)
     if (!subproblem)
         abort();
     int instance_max = 0;
-    int class_majority = -1;
+    int class_majority = 0;
     for (int i = 0; i < subproblem->classCount; i++)
     {
         if (subproblem->classes[i].instanceCount >= instance_max)

@@ -1,11 +1,14 @@
 #include <stdio.h>
+#include <time.h>
 #include "RandomForest.h"
 
 int main(int argc, char **argv)
 {
-    char pathTrain[128] = "./Datasets/PENDIGITS_train.txt";
+    clock_t start_time = clock();
+
+    char pathTrain[128] = "./Datasets/MNIST_train.txt";
     Dataset *trainData = Dataset_readFromFile(pathTrain);
-    char pathTest[128] = "./Datasets/PENDIGITS_test.txt";
+    char pathTest[128] = "./Datasets/MNIST_test.txt";
     Dataset *testData = Dataset_readFromFile(pathTest);
     Subproblem *sp = Dataset_getSubproblem(trainData);
     printf("Subproblem : %d instances, %d features, %d classes\n", sp->instanceCount, sp->featureCount, sp->classCount);
@@ -15,6 +18,11 @@ int main(int argc, char **argv)
     float scoreTest = RandomForest_evaluate(rf, testData);
     printf("treeCount = %d, nodeCount = %d\n", rf->treeCount, RandomForest_nodeCount(rf));
     printf("train = %.3f, test = %.3f\n", scoreTrain, scoreTest);
+
+    clock_t end_time = clock();
+    double elapsed_time = ((double)(end_time - start_time)) / CLOCKS_PER_SEC;
+    printf("Elapsed time: %.3f seconds\n", elapsed_time);
+
     RandomForest_destroy(rf);
     Subproblem_destroy(sp);
     Dataset_destroy(trainData);

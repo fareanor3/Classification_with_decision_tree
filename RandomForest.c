@@ -4,10 +4,14 @@ RandomForest *RandomForest_create(int numberOfTrees, Dataset *data, int maxDepth
 {
     if (numberOfTrees <= 0 || !data || maxDepth <= 0 || baggingProportion <= 0 || prunningThreshold <= 0)
         abort();
+
     RandomForest *randomForest = (RandomForest *)calloc(1, sizeof(RandomForest));
     randomForest->treeCount = numberOfTrees;
     randomForest->classCount = data->classCount;
     randomForest->trees = (DecisionTreeNode **)calloc(numberOfTrees, sizeof(DecisionTreeNode *));
+
+// Parallelize the loop using OpenMP
+#pragma omp parallel for num_threads(2)
     for (int i = 0; i < numberOfTrees; i++)
     {
         Subproblem *sp = Dataset_bagging(data, baggingProportion);

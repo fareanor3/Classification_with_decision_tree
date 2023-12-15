@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
+#include <omp.h>
+
 #include "DecisionTree.h"
 
 typedef struct sRandomForest

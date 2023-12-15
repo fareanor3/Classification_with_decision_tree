@@ -1,3 +1,13 @@
+## Ignore Visual Studio temporary files, build results, and
+
+# User-specific files
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+*.out
+
 /cmake-build-debug
 /obj
 .vs/Classification_with_decision_tree
+/Datasets

@@ -102,17 +102,4 @@ Split Split_compute(Subproblem *subproblem)
     return split;
 }
 
-// int testunit()
-// {
-//     Split split = Split_compute(Dataset_getSubproblem(Dataset_readFromFile("./Datasets/PENDIGITS_train.txt")));
-
-// vérifier que split est bien le bon
-/*
-1. Cherche le min et le maximum d'une colonne :
-2. faire la moyene (max + min) / 2 = 17
-2. calculer l'indice de gini pour cette valeur :
-dessous de 17: 1-((2/3)^2+(1/3)^2) = 0.444444
-strictement au dessus de 17:1-((1/2)^2+(1/2)^2) = 0.500000
-3. faire la moyenne pondérée : 0.444444 * 3/5  + 0.500000 * 2/5 = 0.466667
-*/
-// }
+// TODO: Log loss, entropy

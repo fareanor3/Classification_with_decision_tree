@@ -1,0 +1,267 @@
+Flat profile:
+
+Each sample counts as 0.01 seconds.
+  %   cumulative   self              self     total           
+ time   seconds   seconds    calls   s/call   s/call  name    
+ 53.03     10.96    10.96 21379149     0.00     0.00  Split_gini
+ 44.46     20.14     9.19    28054     0.00     0.00  Split_compute
+  1.11     20.37     0.23        3     0.08     0.08  Dataset_bagging
+  1.02     20.58     0.21  1400000     0.00     0.00  DecisionTree_predict
+  0.24     20.63     0.05       20     0.00     1.01  DecisionTree_create
+  0.10     20.65     0.02  8099684     0.00     0.00  Subproblem_insert
+  0.05     20.66     0.01       21     0.00     0.00  Dataset_getSubproblem
+  0.05     20.67     0.01                             _init
+  0.00     20.67     0.00    70000     0.00     0.00  RandomForest_predict
+  0.00     20.67     0.00    53936     0.00     0.00  Subproblem_create
+  0.00     20.67     0.00    53559     0.00     0.00  Subproblem_destroy
+  0.00     20.67     0.00      320     0.00     0.00  DecisionTree_destroyRec
+  0.00     20.67     0.00      206     0.00     0.00  DecisionTreeNode_parcours
+  0.00     20.67     0.00       20     0.00     0.00  DecisionTree_destroy
+  0.00     20.67     0.00       20     0.00     0.00  Decision_nodeCount
+  0.00     20.67     0.00        2     0.00     0.00  Dataset_destroy
+  0.00     20.67     0.00        2     0.00     0.00  Dataset_readFromFile
+  0.00     20.67     0.00        2     0.00     0.11  RandomForest_evaluate
+  0.00     20.67     0.00        1     0.00     0.00  RandomForest_create
+  0.00     20.67     0.00        1     0.00     0.00  RandomForest_destroy
+  0.00     20.67     0.00        1     0.00     0.00  RandomForest_nodeCount
+
+ %         the percentage of the total running time of the
+time       program used by this function.
+
+cumulative a running sum of the number of seconds accounted
+ seconds   for by this function and those listed above it.
+
+ self      the number of seconds accounted for by this
+seconds    function alone.  This is the major sort for this
+           listing.
+
+calls      the number of times this function was invoked, if
+           this function is profiled, else blank.
+
+ self      the average number of milliseconds spent in this
+ms/call    function per call, if this function is profiled,
+	   else blank.
+
+ total     the average number of milliseconds spent in this
+ms/call    function and its descendents per call, if this
+	   function is profiled, else blank.
+
+name       the name of the function.  This is the minor sort
+           for this listing. The index shows the location of
+	   the function in the gprof listing. If the index is
+	   in parenthesis it shows where it would appear in
+	   the gprof listing if it were to be printed.
+
+Copyright (C) 2012-2023 Free Software Foundation, Inc.
+
+Copying and distribution of this file, with or without modification,
+are permitted in any medium without royalty provided the copyright
+notice and this notice are preserved.
+
+		     Call graph (explanation follows)
+
+
+granularity: each sample hit covers 2 byte(s) for 0.05% of 20.67 seconds
+
+index % time    self  children    called     name
+                                                 <spontaneous>
+[1]     98.9    0.00   20.45                 DecisionTree_evaluate [1]
+                0.05   20.16      20/20          DecisionTree_create [2]
+                0.23    0.00       3/3           Dataset_bagging [5]
+                0.01    0.00      20/21          Dataset_getSubproblem [11]
+                0.00    0.00      15/53559       Subproblem_destroy [14]
+-----------------------------------------------
+                               57494             DecisionTree_create [2]
+                0.05   20.16      20/20          DecisionTree_evaluate [1]
+[2]     97.8    0.05   20.16      20+57494   DecisionTree_create [2]
+                9.19   10.96   28054/28054       Split_compute [3]
+                0.02    0.00 8099684/8099684     Subproblem_insert [10]
+                0.00    0.00   53915/53936       Subproblem_create [13]
+                0.00    0.00   53543/53559       Subproblem_destroy [14]
+                               57494             DecisionTree_create [2]
+-----------------------------------------------
+                9.19   10.96   28054/28054       DecisionTree_create [2]
+[3]     97.4    9.19   10.96   28054         Split_compute [3]
+               10.96    0.00 21379149/21379149     Split_gini [4]
+-----------------------------------------------
+               10.96    0.00 21379149/21379149     Split_compute [3]
+[4]     53.0   10.96    0.00 21379149         Split_gini [4]
+-----------------------------------------------
+                0.23    0.00       3/3           DecisionTree_evaluate [1]
+[5]      1.1    0.23    0.00       3         Dataset_bagging [5]
+-----------------------------------------------
+                                                 <spontaneous>
+[6]      1.0    0.00    0.21                 main [6]
+                0.00    0.21       2/2           RandomForest_evaluate [9]
+                0.00    0.00       1/21          Dataset_getSubproblem [11]
+                0.00    0.00       2/2           Dataset_readFromFile [20]
+                0.00    0.00       2/2           Dataset_destroy [19]
+                0.00    0.00       1/1           RandomForest_create [21]
+                0.00    0.00       1/1           RandomForest_nodeCount [23]
+                0.00    0.00       1/53559       Subproblem_destroy [14]
+                0.00    0.00       1/1           RandomForest_destroy [22]
+-----------------------------------------------
+                0.21    0.00 1400000/1400000     RandomForest_predict [8]
+[7]      1.0    0.21    0.00 1400000         DecisionTree_predict [7]
+-----------------------------------------------
+                0.00    0.21   70000/70000       RandomForest_evaluate [9]
+[8]      1.0    0.00    0.21   70000         RandomForest_predict [8]
+                0.21    0.00 1400000/1400000     DecisionTree_predict [7]
+-----------------------------------------------
+                0.00    0.21       2/2           main [6]
+[9]      1.0    0.00    0.21       2         RandomForest_evaluate [9]
+                0.00    0.21   70000/70000       RandomForest_predict [8]
+-----------------------------------------------
+                0.02    0.00 8099684/8099684     DecisionTree_create [2]
+[10]     0.1    0.02    0.00 8099684         Subproblem_insert [10]
+-----------------------------------------------
+                0.00    0.00       1/21          main [6]
+                0.01    0.00      20/21          DecisionTree_evaluate [1]
+[11]     0.0    0.01    0.00      21         Dataset_getSubproblem [11]
+                0.00    0.00      21/53936       Subproblem_create [13]
+-----------------------------------------------
+                                                 <spontaneous>
+[12]     0.0    0.01    0.00                 _init [12]
+-----------------------------------------------
+                0.00    0.00      21/53936       Dataset_getSubproblem [11]
+                0.00    0.00   53915/53936       DecisionTree_create [2]
+[13]     0.0    0.00    0.00   53936         Subproblem_create [13]
+-----------------------------------------------
+                0.00    0.00       1/53559       main [6]
+                0.00    0.00      15/53559       DecisionTree_evaluate [1]
+                0.00    0.00   53543/53559       DecisionTree_create [2]
+[14]     0.0    0.00    0.00   53559         Subproblem_destroy [14]
+-----------------------------------------------
+                               40764             DecisionTree_destroyRec [15]
+                0.00    0.00     320/320         DecisionTree_destroy [17]
+[15]     0.0    0.00    0.00     320+40764   DecisionTree_destroyRec [15]
+                               40764             DecisionTree_destroyRec [15]
+-----------------------------------------------
+                               10889             DecisionTreeNode_parcours [16]
+                0.00    0.00     206/206         Decision_nodeCount [18]
+[16]     0.0    0.00    0.00     206+10889   DecisionTreeNode_parcours [16]
+                               10889             DecisionTreeNode_parcours [16]
+-----------------------------------------------
+                0.00    0.00      20/20          RandomForest_destroy [22]
+[17]     0.0    0.00    0.00      20         DecisionTree_destroy [17]
+                0.00    0.00     320/320         DecisionTree_destroyRec [15]
+-----------------------------------------------
+                0.00    0.00      20/20          RandomForest_nodeCount [23]
+[18]     0.0    0.00    0.00      20         Decision_nodeCount [18]
+                0.00    0.00     206/206         DecisionTreeNode_parcours [16]
+-----------------------------------------------
+                0.00    0.00       2/2           main [6]
+[19]     0.0    0.00    0.00       2         Dataset_destroy [19]
+-----------------------------------------------
+                0.00    0.00       2/2           main [6]
+[20]     0.0    0.00    0.00       2         Dataset_readFromFile [20]
+-----------------------------------------------
+                0.00    0.00       1/1           main [6]
+[21]     0.0    0.00    0.00       1         RandomForest_create [21]
+-----------------------------------------------
+                0.00    0.00       1/1           main [6]
+[22]     0.0    0.00    0.00       1         RandomForest_destroy [22]
+                0.00    0.00      20/20          DecisionTree_destroy [17]
+-----------------------------------------------
+                0.00    0.00       1/1           main [6]
+[23]     0.0    0.00    0.00       1         RandomForest_nodeCount [23]
+                0.00    0.00      20/20          Decision_nodeCount [18]
+-----------------------------------------------
+
+ This table describes the call tree of the program, and was sorted by
+ the total amount of time spent in each function and its children.
+
+ Each entry in this table consists of several lines.  The line with the
+ index number at the left hand margin lists the current function.
+ The lines above it list the functions that called this function,
+ and the lines below it list the functions this one called.
+ This line lists:
+     index	A unique number given to each element of the table.
+		Index numbers are sorted numerically.
+		The index number is printed next to every function name so
+		it is easier to look up where the function is in the table.
+
+     % time	This is the percentage of the `total' time that was spent
+		in this function and its children.  Note that due to
+		different viewpoints, functions excluded by options, etc,
+		these numbers will NOT add up to 100%.
+
+     self	This is the total amount of time spent in this function.
+
+     children	This is the total amount of time propagated into this
+		function by its children.
+
+     called	This is the number of times the function was called.
+		If the function called itself recursively, the number
+		only includes non-recursive calls, and is followed by
+		a `+' and the number of recursive calls.
+
+     name	The name of the current function.  The index number is
+		printed after it.  If the function is a member of a
+		cycle, the cycle number is printed between the
+		function's name and the index number.
+
+
+ For the function's parents, the fields have the following meanings:
+
+     self	This is the amount of time that was propagated directly
+		from the function into this parent.
+
+     children	This is the amount of time that was propagated from
+		the function's children into this parent.
+
+     called	This is the number of times this parent called the
+		function `/' the total number of times the function
+		was called.  Recursive calls to the function are not
+		included in the number after the `/'.
+
+     name	This is the name of the parent.  The parent's index
+		number is printed after it.  If the parent is a
+		member of a cycle, the cycle number is printed between
+		the name and the index number.
+
+ If the parents of the function cannot be determined, the word
+ `<spontaneous>' is printed in the `name' field, and all the other
+ fields are blank.
+
+ For the function's children, the fields have the following meanings:
+
+     self	This is the amount of time that was propagated directly
+		from the child into the function.
+
+     children	This is the amount of time that was propagated from the
+		child's children to the function.
+
+     called	This is the number of times the function called
+		this child `/' the total number of times the child
+		was called.  Recursive calls by the child are not
+		listed in the number after the `/'.
+
+     name	This is the name of the child.  The child's index
+		number is printed after it.  If the child is a
+		member of a cycle, the cycle number is printed
+		between the name and the index number.
+
+ If there are any cycles (circles) in the call graph, there is an
+ entry for the cycle-as-a-whole.  This entry shows who called the
+ cycle (as parents) and the members of the cycle (as children.)
+ The `+' recursive calls entry shows the number of function calls that
+ were internal to the cycle, and the calls entry for each member shows,
+ for that member, how many times it was called from other members of
+ the cycle.
+
+Copyright (C) 2012-2023 Free Software Foundation, Inc.
+
+Copying and distribution of this file, with or without modification,
+are permitted in any medium without royalty provided the copyright
+notice and this notice are preserved.
+
+Index by function name
+
+   [5] Dataset_bagging        [15] DecisionTree_destroyRec [8] RandomForest_predict
+  [19] Dataset_destroy         [7] DecisionTree_predict    [3] Split_compute
+  [11] Dataset_getSubproblem  [18] Decision_nodeCount      [4] Split_gini
+  [20] Dataset_readFromFile   [21] RandomForest_create    [13] Subproblem_create
+  [16] DecisionTreeNode_parcours [22] RandomForest_destroy [14] Subproblem_destroy
+   [2] DecisionTree_create     [9] RandomForest_evaluate  [10] Subproblem_insert
+  [17] DecisionTree_destroy   [23] RandomForest_nodeCount [12] _init

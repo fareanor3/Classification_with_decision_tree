@@ -6,11 +6,13 @@ int main(int argc, char **argv)
 {
     clock_t start_time = clock();
 
-    char pathTrain[128] = "./Datasets/MNIST_train.txt";
+    char pathTrain[128] = "./Datasets/LETTER_train.txt";
+    printf("Dataset : %s\n", pathTrain);
     Dataset *trainData = Dataset_readFromFile(pathTrain);
-    char pathTest[128] = "./Datasets/MNIST_test.txt";
+    char pathTest[128] = "./Datasets/LETTER_test.txt";
     Dataset *testData = Dataset_readFromFile(pathTest);
     Subproblem *sp = Dataset_getSubproblem(trainData);
+
     printf("Subproblem : %d instances, %d features, %d classes\n", sp->instanceCount, sp->featureCount, sp->classCount);
     RandomForest *rf = RandomForest_create(20, trainData, 30, 0.5f, 1.0f);
     printf("RandomForest : %d trees, %d classes\n", rf->treeCount, rf->classCount);

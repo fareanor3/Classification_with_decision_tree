@@ -25,8 +25,6 @@ float Split_gini(Subproblem *sp, int featureID, float threshold)
     int *class_counts_sup = calloc(sp->classCount, sizeof(int));
     int *class_counts_inf = calloc(sp->classCount, sizeof(int));
 
-    for (i = 0; i < sp->classCount; i++)
-        class_counts_sup[i] = class_counts_inf[i] = 0;
     for (i = 0; i < sp->instanceCount; i++) // Parcourir toutes les instances du sous-problème
     {
         if (sp->instances[i]->values[featureID] < threshold)

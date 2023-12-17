@@ -10,7 +10,6 @@ RandomForest *RandomForest_create(int numberOfTrees, Dataset *data, int maxDepth
     randomForest->classCount = data->classCount;
     randomForest->trees = (DecisionTreeNode **)calloc(numberOfTrees, sizeof(DecisionTreeNode *));
 
-// Parallelize the loop using OpenMP
 #pragma omp parallel for num_threads(2)
     for (int i = 0; i < numberOfTrees; i++)
     {

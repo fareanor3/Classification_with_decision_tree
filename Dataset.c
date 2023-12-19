@@ -141,32 +141,14 @@ Subproblem *Dataset_bagging(Dataset *data, float proportion)
 {
     if (data == NULL || proportion <= 0)
         abort();
-    // On cherche combien d'instances sont la proportion qu'on nous a donné
-    int quantite_inst = data->instanceCount * proportion;
-    // On alloue le nouveau dataset
-    Dataset *rand_data = (Dataset *)calloc(1, sizeof(Dataset));
-    // On lui attribue ses composantes
-    rand_data->instanceCount = quantite_inst;
-    rand_data->featureCount = data->featureCount;
-    rand_data->classCount = data->classCount;
-    // On alloue son tableau d'instances
-    rand_data->instances = (Instance *)calloc(rand_data->instanceCount, sizeof(Instance));
-    // On choisit aléatoirement les instances qui composeront le nouveau dataset
-    for (int i = 0; i < rand_data->instanceCount; i++)
+    // On crée une structure subproblem avec data
+    Subproblem *subproblem = Subproblem_create(data->instanceCount * proportion, data->featureCount, data->classCount);
+    // On insère toutes les instances de data dans la structure subproblem créée
+    for (int i = 0; i < data->instanceCount * proportion; i++)
     {
-        // On cherche un nombre aléatoire compris entre 0 et le nombre d'instances de data
-        int inf = 0, sup = data->instanceCount - 1;
-        int nb_rand = (rand() % (sup + 1 - inf)) + inf;
-        // On met l'instance de rand_data à la place i avec la valeur celle de data à la place nb_rand
-        rand_data->instances[i].values = (int *)calloc(data->featureCount, sizeof(int));
-        // On remplit le tableau de values de l'instance de rand_data à la place i avec les valeurs de data à la place nb_rand
-        for (int j = 0; j < data->featureCount; j++)
-            rand_data->instances[i].values[j] = (int)data->instances[nb_rand].values[j];
-        // On met la classID de rand_data à la place i avec la valeur celle de data à la place nb_rand
-        rand_data->instances[i].classID = data->instances[nb_rand].classID;
+        int random = rand() % data->instanceCount;
+        Subproblem_insert(subproblem, &data->instances[random]);
     }
-    // On crée un subproblem avec ce nouveau dataset
-    Subproblem *subproblem = Dataset_getSubproblem(rand_data);
-    // On retourne le subproblem crée
+    // On renvoie subproblem
     return subproblem;
 }

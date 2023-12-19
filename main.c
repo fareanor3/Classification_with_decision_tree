@@ -6,10 +6,10 @@ int main(int argc, char **argv)
 {
     clock_t start_time = clock();
 
-    char pathTrain[128] = "./Datasets/LETTER_train.txt";
+    char pathTrain[128] = "./Datasets/PENDIGITS_train.txt";
     printf("Dataset : %s\n", pathTrain);
     Dataset *trainData = Dataset_readFromFile(pathTrain);
-    char pathTest[128] = "./Datasets/LETTER_test.txt";
+    char pathTest[128] = "./Datasets/PENDIGITS_train.txt";
     Dataset *testData = Dataset_readFromFile(pathTest);
     Subproblem *sp = Dataset_getSubproblem(trainData);
 

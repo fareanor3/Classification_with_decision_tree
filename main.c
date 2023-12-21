@@ -35,7 +35,7 @@ int main(int argc, char **argv)
         break;
 
     case 2:
-        ChoixTreeCount = 10;
+        ChoixTreeCount = 30;
         break;
 
     case 3:
@@ -87,12 +87,19 @@ int main(int argc, char **argv)
     float scoreTest = RandomForest_evaluate(rf, testData);
     printf("treeCount = %d, nodeCount = %d\n", rf->treeCount, RandomForest_nodeCount(rf));
     printf("train = %.3f, test = %.3f\n", scoreTrain, scoreTest);
-
+    FILE *file = fopen("RandomForestMNIST.txt", "wb");
+    RandomForest_SaveForest(rf, file);
+    RandomForest *rf2 = RandomForest_GetinFile(file);
+    float scoreTrain2 = RandomForest_evaluate(rf2, trainData);
+    float scoreTest2 = RandomForest_evaluate(rf2, testData);
+    printf("treeCount = %d, nodeCount = %d\n", rf2->treeCount, RandomForest_nodeCount(rf2));
+    printf("train = %.3f, test = %.3f\n", scoreTrain2, scoreTest2);
     clock_t end_time = clock();
     double elapsed_time = ((double)(end_time - start_time)) / CLOCKS_PER_SEC;
     printf("Elapsed time: %.3f seconds\n", elapsed_time);
 
     RandomForest_destroy(rf);
+    RandomForest_destroy(rf2);
     Subproblem_destroy(sp);
     Dataset_destroy(trainData);
     Dataset_destroy(testData);

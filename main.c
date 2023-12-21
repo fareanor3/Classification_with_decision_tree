@@ -3,6 +3,7 @@
 #include <string.h>
 #include <math.h>
 #include "RandomForest.h"
+#include "Sauvegarde.h"
 
 int main(int argc, char **argv)
 {

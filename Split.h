@@ -1,3 +1,5 @@
+#pragma once
+
 #include "Dataset.h"
 
 typedef struct sSplit

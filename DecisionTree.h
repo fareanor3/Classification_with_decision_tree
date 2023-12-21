@@ -1,3 +1,5 @@
+#pragma once
+
 #include "Split.h"
 
 typedef struct sDecisionTreeNode

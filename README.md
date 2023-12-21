@@ -20,7 +20,7 @@ gcc *.c -Wall -O3 -fopenmp -lm
 
 * geni and entropy as split criteria
 
-* load a train and test tree from a file
+// * load a train and test tree from a file
 
 > Random forest with :
 

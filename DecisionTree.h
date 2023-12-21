@@ -8,7 +8,7 @@ typedef struct sDecisionTreeNode
     int classID;
 } DecisionTreeNode;
 
-DecisionTreeNode *DecisionTree_create(Subproblem *sp, int currentDepth, int maxDepth, float prunningThreshold);
+DecisionTreeNode *DecisionTree_create(Subproblem *sp, int currentDepth, int maxDepth, float prunningThreshold, int GiniOrEntropy, bool *ferature_Bagg);
 
 /// @brief Calcule la pureté d'un subproblem
 /// @param subproblem Le subroblem

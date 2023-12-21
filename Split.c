@@ -16,7 +16,6 @@ float Split_gini(Subproblem *sp, int featureID, float threshold)
        du nombre d'individus dans chaque sous-problème)
     5. Retourner la valeur final en float
     */
-    // if (!sp || featureID <= 0 || threshold <= 0)
 
     int i;
     float gini = 0.0, sum_sup = 0.0, sum_inf = 0.0, p;
@@ -54,7 +53,7 @@ float Split_gini(Subproblem *sp, int featureID, float threshold)
 }
 
 // Todo: a aptimiser ! en temps et en précision !!
-Split Split_compute(Subproblem *subproblem)
+Split Split_compute(Subproblem *subproblem, int GiniOrEntropy, bool *featureBagging)
 {
     /*
     1. Parcourir toutes les features l'une après l'autre
@@ -63,7 +62,8 @@ Split Split_compute(Subproblem *subproblem)
     4. Retourner le split avec l'indice de Gini le plus faible
     */
     int i, j;
-    float gini, min_gini = 1.0;
+    float gini, entropy, min_gini = 1.0;
+    float min_entropy = INFINITY;
     Split split;
     for (i = 0; i < subproblem->featureCount; i++) // Parcourir toutes les features
     {                                              // Rechercher comment faire une optimisation pour trouver rapidement le seuil optimal d'une feature (dichotomie peut-être ?)
@@ -77,6 +77,8 @@ Split Split_compute(Subproblem *subproblem)
         //         split.threshold = subproblem->instances[j]->values[i];
         //     }
         // }
+        if (featureBagging[i] == false)
+            continue;
         float max = -INFINITY, min = INFINITY;
         for (j = 0; j < subproblem->instanceCount; j++)
         {
@@ -87,13 +89,25 @@ Split Split_compute(Subproblem *subproblem)
                 min = subproblem->instances[j]->values[i];
         }
         float PhiJ = (max + min) / 2.0;
-
-        gini = Split_gini(subproblem, i, PhiJ);
-        if (gini < min_gini)
+        if (GiniOrEntropy == 1)
         {
-            min_gini = gini;
-            split.featureID = i;
-            split.threshold = PhiJ;
+            gini = Split_gini(subproblem, i, PhiJ);
+            if (gini < min_gini)
+            {
+                min_gini = gini;
+                split.featureID = i;
+                split.threshold = PhiJ;
+            }
+        }
+        else
+        {
+            entropy = Split_Entropy(subproblem, i, PhiJ);
+            if (entropy < min_entropy)
+            {
+                min_entropy = entropy;
+                split.featureID = i;
+                split.threshold = PhiJ;
+            }
         }
     }
     // printf("Split feature : %d threshold : %f gini (impurity) : %f\n", split.featureID, split.threshold, min_gini);
@@ -101,3 +115,44 @@ Split Split_compute(Subproblem *subproblem)
 }
 
 // TODO: Log loss, entropy
+
+float Split_Entropy(Subproblem *sp, int featureID, float threshold)
+{
+    int i;
+    float entropy = 0.0, sum_sup = 0.0, sum_inf = 0.0, p;
+    int total_instances = sp->instanceCount;
+    int total_sup = 0, total_inf = 0;
+    int *class_counts_sup = calloc(sp->classCount, sizeof(int));
+    int *class_counts_inf = calloc(sp->classCount, sizeof(int));
+
+    for (i = 0; i < sp->instanceCount; i++)
+    {
+        if (sp->instances[i]->values[featureID] < threshold)
+        {
+            class_counts_inf[sp->instances[i]->classID]++;
+            total_inf++;
+        }
+        else
+        {
+            class_counts_sup[sp->instances[i]->classID]++;
+            total_sup++;
+        }
+    }
+
+    for (i = 0; i < sp->classCount; i++)
+    {
+        p = (float)class_counts_sup[i] / total_sup;
+        if (p != 0)
+            sum_sup -= p * log2(p);
+        p = (float)class_counts_inf[i] / total_inf;
+        if (p != 0)
+            sum_inf -= p * log2(p);
+    }
+
+    entropy = ((float)total_inf / total_instances) * sum_inf + ((float)total_sup / total_instances) * sum_sup;
+
+    free(class_counts_sup);
+    free(class_counts_inf);
+
+    return entropy;
+}

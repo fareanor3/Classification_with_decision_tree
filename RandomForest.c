@@ -1,6 +1,6 @@
 #include "RandomForest.h"
 
-RandomForest *RandomForest_create(int numberOfTrees, Dataset *data, int maxDepth, float baggingProportion, float prunningThreshold)
+RandomForest *RandomForest_create(int numberOfTrees, Dataset *data, int maxDepth, float baggingProportion, float ferature_Bagging, float prunningThreshold, int GiniOrEntropy)
 {
     if (numberOfTrees <= 0 || !data || maxDepth <= 0 || baggingProportion <= 0 || prunningThreshold <= 0)
         abort();
@@ -13,9 +13,11 @@ RandomForest *RandomForest_create(int numberOfTrees, Dataset *data, int maxDepth
 #pragma omp parallel for num_threads(2)
     for (int i = 0; i < numberOfTrees; i++)
     {
+        bool *ferature_Bagg = Dataset_bagging_features(data, ferature_Bagging);
         Subproblem *sp = Dataset_bagging(data, baggingProportion);
-        randomForest->trees[i] = DecisionTree_create(sp, 0, maxDepth, prunningThreshold);
+        randomForest->trees[i] = DecisionTree_create(sp, 0, maxDepth, prunningThreshold, GiniOrEntropy, ferature_Bagg);
         Subproblem_destroy(sp);
+        free(ferature_Bagg);
     }
     return randomForest;
 }

@@ -12,7 +12,7 @@ typedef struct sRandomForest
     int classCount;
 } RandomForest;
 
-RandomForest *RandomForest_create(int numberOfTrees, Dataset *data, int maxDepth, float baggingProportion, float prunningThreshold);
+RandomForest *RandomForest_create(int numberOfTrees, Dataset *data, int maxDepth, float baggingProportion, float ferature_Bagging, float prunningThreshold, int GiniOrEntropy);
 
 int RandomForest_predict(RandomForest *rf, Instance *instance);
 

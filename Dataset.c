@@ -152,3 +152,18 @@ Subproblem *Dataset_bagging(Dataset *data, float proportion)
     // On renvoie subproblem
     return subproblem;
 }
+
+// Renvoie une
+bool *Dataset_bagging_features(Dataset *data, float proportion)
+{
+    if (data == NULL || proportion <= 0)
+        abort();
+    bool *features = (bool *)calloc(data->featureCount * proportion, sizeof(int));
+
+    for (int i = 0; i < data->featureCount * proportion; i++)
+    {
+        int random = rand() % data->featureCount;
+        features[random] = true;
+    }
+    return features;
+}

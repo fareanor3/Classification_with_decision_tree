@@ -1,3 +1,4 @@
+#include <stdbool.h>
 typedef struct sInstance
 {
     int *values;
@@ -66,3 +67,8 @@ void Subproblem_print(Subproblem *subproblem);
 /// @param proportion La proportion du dataset que l'on veut
 /// @return Un sous-problème avec une proportion des instances du dataset de base
 Subproblem *Dataset_bagging(Dataset *data, float proportion);
+
+/// @brief Produiit un tableau de features aléatoires possible
+/// @param featureCount Le nombre de features
+/// @param proportion La proportion de features que l'on veut (entre 0 et 1)
+bool *Dataset_bagging_features(Dataset *data, float proportion);

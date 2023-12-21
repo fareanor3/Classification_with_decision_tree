@@ -3,7 +3,7 @@
 #include <stdio.h>
 #include "DecisionTree.h"
 
-DecisionTreeNode *DecisionTree_create(Subproblem *sp, int currentDepth, int maxDepth, float prunningThreshold)
+DecisionTreeNode *DecisionTree_create(Subproblem *sp, int currentDepth, int maxDepth, float prunningThreshold, int GiniOrEntropy, bool *ferature_Bagg)
 {
     if (!sp || currentDepth < 0 || maxDepth < 0 || prunningThreshold < 0)
         abort();
@@ -14,7 +14,7 @@ DecisionTreeNode *DecisionTree_create(Subproblem *sp, int currentDepth, int maxD
         n->classID = Subproblem_majorityclass(sp);
         return n;
     }
-    Split s = Split_compute(sp);
+    Split s = Split_compute(sp, GiniOrEntropy, ferature_Bagg);
     n->split = s;
     int leftCount = 0, rightCount = 0;
     for (int i = 0; i < sp->instanceCount; i++)
@@ -34,8 +34,8 @@ DecisionTreeNode *DecisionTree_create(Subproblem *sp, int currentDepth, int maxD
             Subproblem_insert(sp_right, sp->instances[i]);
     }
 
-    n->left = DecisionTree_create(sp_left, currentDepth + 1, maxDepth, prunningThreshold);
-    n->right = DecisionTree_create(sp_right, currentDepth + 1, maxDepth, prunningThreshold);
+    n->left = DecisionTree_create(sp_left, currentDepth + 1, maxDepth, prunningThreshold, GiniOrEntropy, ferature_Bagg);
+    n->right = DecisionTree_create(sp_right, currentDepth + 1, maxDepth, prunningThreshold, GiniOrEntropy, ferature_Bagg);
     Subproblem_destroy(sp_left);
     Subproblem_destroy(sp_right);
     return n;

@@ -37,8 +37,8 @@ Dataset : 60000 instances, 784 features, 10 classes
 Dataset : 10000 instances, 784 features, 10 classes
 Subproblem : 60000 instances, 784 features, 10 classes
 RandomForest : 20 trees, 10 classes
-treeCount = 20, nodeCount = 106172
-train = 0.988, test = 0.922
+treeCount = 20, nodeCount = 114392
+train = 0.994, test = 0.943
 Elapsed time: 62.921 seconds
 ```
 
@@ -59,6 +59,11 @@ Elapsed time: 62.921 seconds
 ```txt
 
 ```
+
+## WARNING
+
+> PTHREADS make some dataleaks...
+288 bytes in 1 blocks are possibly
 
 ## Authors
 

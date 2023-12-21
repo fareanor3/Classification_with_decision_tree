@@ -8,24 +8,34 @@ Dataset *Dataset_readFromFile(char *filename)
     FILE *file = fopen(filename, "r");
     if (file == NULL)
         abort();
-    // On alloue la structure data
-    Dataset *dataset = (Dataset *)calloc(1, sizeof(Dataset));
-    int test = 0;
+
+    int instanceCount = 0;
+    int classCount = 0;
+    int featureCount = 0;
     // On récupère les données de la première ligne du fichier (instanceCount/classCount/featureCount)
-    test = fscanf(file, "%d %d %d", &dataset->instanceCount, &dataset->classCount, &dataset->featureCount);
+    int test = fscanf(file, "%d %d %d", &instanceCount, &classCount, &featureCount);
     if (test != 3)
         abort();
+
+    // On alloue la structure data
+    Dataset *dataset = (Dataset *)calloc(1, sizeof(Dataset));
+
     // On alloue le tableau d'instances
-    dataset->instances = (Instance *)calloc(dataset->instanceCount, sizeof(Instance));
-    // On remplit le tableau d'instances avec les values
-    for (int i = 0; i < dataset->instanceCount; i++)
+    dataset->instances = (Instance *)calloc(instanceCount, sizeof(Instance));
+
+    for (int i = 0; i < instanceCount; i++)
     {
         // On alloue le tableau de values de chaque instance
-        dataset->instances[i].values = calloc(dataset->featureCount, sizeof(int));
+        dataset->instances[i].values = calloc(featureCount, sizeof(int));
+    }
+
+    // On remplit le tableau d'instances avec les values
+    for (int i = 0; i < instanceCount; i++)
+    {
         test = fscanf(file, "%d\t", &dataset->instances[i].classID);
         if (test != 1)
             abort();
-        for (int j = 0; j < dataset->featureCount; j++)
+        for (int j = 0; j < featureCount; j++)
         {
             test = fscanf(file, "%d ", &dataset->instances[i].values[j]);
             if (test != 1)
@@ -33,6 +43,9 @@ Dataset *Dataset_readFromFile(char *filename)
         }
     }
     fclose(file);
+    dataset->instanceCount = instanceCount;
+    dataset->classCount = classCount;
+    dataset->featureCount = featureCount;
     printf("Dataset : %d instances, %d features, %d classes\n", dataset->instanceCount, dataset->featureCount, dataset->classCount);
     // On renvoie dataset
     return dataset;

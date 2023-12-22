@@ -14,19 +14,21 @@ gcc *.c -Wall -O3 -fopenmp -lm
 ./a.out
 ```
 
-## features
+## Features
 
 > Decision tree for classification
 
 * geni and entropy as split criteria
 
-// * load a train and test tree from a file
+* Dataset_bagging and feature_bagging
+
+* load a train and test tree from a file
 
 > Random forest with :
 
 * geni and entropy as split criteria
 
-* Dataset_bagging
+* Dataset_bagging and feature_bagging
 
 # Results
 
@@ -45,13 +47,25 @@ Elapsed time: 62.921 seconds
 > Pendigits
 
 ```txt
-
+Dataset : 7494 instances, 16 features, 10 classes
+Dataset : 3498 instances, 16 features, 10 classes
+Subproblem : 7494 instances, 16 features, 10 classes
+RandomForest : 20 trees, 10 classes
+treeCount = 20, nodeCount = 14786
+train = 0.996, test = 0.953
+Elapsed time: 0.385 seconds
 ```
 
 > Fashion
 
 ```txt
-
+Dataset : 60000 instances, 784 features, 10 classes
+Dataset : 10000 instances, 784 features, 10 classes
+Subproblem : 60000 instances, 784 features, 10 classes
+RandomForest : 20 trees, 10 classes
+treeCount = 20, nodeCount = 187722
+train = 0.984, test = 0.850
+Elapsed time: 242.810 seconds
 ```
 
 > Letter
@@ -63,7 +77,7 @@ Elapsed time: 62.921 seconds
 ## WARNING
 
 > PTHREADS make some dataleaks...
-288 bytes in 1 blocks are possibly
+288 bytes in 1 blocks are possibly lost
 
 ## Authors
 

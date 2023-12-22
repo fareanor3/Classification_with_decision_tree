@@ -46,8 +46,8 @@ Dataset *Dataset_readFromFile(char *filename)
     dataset->instanceCount = instanceCount;
     dataset->classCount = classCount;
     dataset->featureCount = featureCount;
-    printf("Dataset : %d instances, %d features, %d classes\n", dataset->instanceCount, dataset->featureCount, dataset->classCount);
-    // On renvoie dataset
+    // printf("Dataset : %d instances, %d features, %d classes\n", dataset->instanceCount, dataset->featureCount, dataset->classCount);
+    //  On renvoie dataset
     return dataset;
 }
 

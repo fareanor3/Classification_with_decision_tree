@@ -35,6 +35,11 @@ void DecisionTree_File(DecisionTreeNode *tree, const char *filename)
 
 DecisionTreeNode *DecisionTree_RecreateTree(FILE *file, DecisionTreeNode *tree)
 {
+    if (file == NULL)
+    {
+        printf("Fichier non-existant");
+        return NULL;
+    }
     char type;
     fread(&type, sizeof(char), 1, file);
     DecisionTreeNode *node = (DecisionTreeNode *)calloc(1, sizeof(DecisionTreeNode));
@@ -51,6 +56,11 @@ DecisionTreeNode *DecisionTree_RecreateTree(FILE *file, DecisionTreeNode *tree)
         fread(&node->classID, sizeof(int), 1, file);
         return node;
     }
+    // else if (type == '\n')
+    // {
+    //     free(node);
+    //     return NULL;
+    // }
     else
     {
         printf("Erreur de lecture/d'écriture");
@@ -66,8 +76,21 @@ DecisionTreeNode *DecisionTree_GetinFile(FILE *file)
         return NULL;
     }
     DecisionTreeNode *tree = DecisionTree_RecreateTree(file, NULL);
-    fclose(file);
     return tree;
+}
+
+void RandomForest_File(RandomForest *forest, const char *filename)
+{
+    if (forest == NULL)
+        abort();
+    FILE *file = fopen(filename, "wb+");
+    if (file == NULL)
+    {
+        printf("Le fichier n'a pas pu être ouvert");
+        abort();
+    }
+    RandomForest_SaveForest(forest, file);
+    fclose(file);
 }
 
 RandomForest *RandomForest_GetinFile(FILE *file)
@@ -88,13 +111,12 @@ RandomForest *RandomForest_GetinFile(FILE *file)
         forest->trees[i] = DecisionTree_GetinFile(file);
         if (forest->trees[i] == NULL)
         {
-            printf("Erreur de lecture/d'écriture");
+            printf("Erreur de lecture/d'écriture sur l'arbre %d\n", i);
             return NULL;
         }
     }
     forest->treeCount = treeCount;
     forest->classCount = classCount;
-    fclose(file);
     return forest;
 }
 

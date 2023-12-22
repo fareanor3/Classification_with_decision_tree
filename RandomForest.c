@@ -25,7 +25,10 @@ RandomForest *RandomForest_create(int numberOfTrees, Dataset *data, int maxDepth
 int RandomForest_predict(RandomForest *rf, Instance *instance)
 {
     if (!rf || !instance)
-        abort();
+    {
+        // printf("Erreur de prédiction\n");
+        return -1;
+    }
     int *votes = (int *)calloc(rf->classCount, sizeof(int));
     for (int i = 0; i < rf->treeCount; i++)
     {

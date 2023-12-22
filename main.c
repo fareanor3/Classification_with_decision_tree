@@ -9,8 +9,8 @@ int main(int argc, char **argv)
 {
     clock_t start_time = clock();
 
-    char pathTrain[128] = "./Datasets/PENDIGITS_train.txt";
-    char pathTest[128] = "./Datasets/PENDIGITS_test.txt";
+    char pathTrain[128] = "./Datasets/MNIST_train.txt";
+    char pathTest[128] = "./Datasets/MNIST_test.txt";
     Dataset *trainData = Dataset_readFromFile(pathTrain);
     Dataset *testData = Dataset_readFromFile(pathTest);
     Subproblem *sp = Dataset_getSubproblem(trainData);
@@ -21,8 +21,8 @@ int main(int argc, char **argv)
     float scoreTest = RandomForest_evaluate(rf, testData);
     printf("treeCount = %d, nodeCount = %d\n", rf->treeCount, RandomForest_nodeCount(rf));
     printf("train = %.3f, test = %.3f\n", scoreTrain, scoreTest);
-    RandomForest_File(rf, "RandomForestPENDIGITS.txt");
-    FILE *file = fopen("RandomForestPENDIGITS.txt", "rb");
+    RandomForest_File(rf, "RandomForestMNIST.txt");
+    FILE *file = fopen("RandomForestMNIST.txt", "rb");
     RandomForest *rf2 = RandomForest_GetinFile(file);
     fclose(file);
     float scoreTrain2 = RandomForest_evaluate(rf2, trainData);

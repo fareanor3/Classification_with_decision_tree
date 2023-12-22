@@ -21,12 +21,14 @@ Dataset *Dataset_readFromFile(char *filename)
     Dataset *dataset = (Dataset *)calloc(1, sizeof(Dataset));
 
     // On alloue le tableau d'instances
-    dataset->instances = (Instance *)calloc(instanceCount, sizeof(Instance));
+    // dataset->instances = (Instance *)calloc(instanceCount, sizeof(Instance));
+    dataset->instances = (Instance *)malloc(instanceCount * sizeof(Instance));
 
     for (int i = 0; i < instanceCount; i++)
     {
         // On alloue le tableau de values de chaque instance
-        dataset->instances[i].values = calloc(featureCount, sizeof(int));
+        // dataset->instances[i].values = calloc(featureCount, sizeof(int));
+        dataset->instances[i].values = malloc(featureCount * sizeof(int));
     }
 
     // On remplit le tableau d'instances avec les values
@@ -69,7 +71,8 @@ Subproblem *Subproblem_create(int maximumCapacity, int featureCount, int classCo
     if (maximumCapacity <= 0 || featureCount <= 0 || classCount <= 0)
         abort();
     // On alloue la structure subproblem
-    Subproblem *subproblem = (Subproblem *)calloc(1, sizeof(Subproblem));
+    // Subproblem *subproblem = (Subproblem *)calloc(1, sizeof(Subproblem));
+    Subproblem *subproblem = (Subproblem *)malloc(sizeof(Subproblem));
     subproblem->capacity = maximumCapacity;
     // On récupère les valeurs données dans les paramètres
     subproblem->featureCount = featureCount;
